@@ -1,0 +1,42 @@
+name: simple_viewer
+description: "A cross-platform image viewing application."
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.7.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+  
+  # State Management
+  flutter_riverpod: ^2.4.9
+  
+  # Navigation
+  go_router: ^12.1.1
+  
+  # Image Processing
+  flutter_cache_manager: ^3.3.1
+  photo_view: ^0.14.0
+  exif: ^3.1.4
+  flutter_image_clipboard: ^1.0.0
+  
+  # File System & Utilities
+  path_provider: ^2.1.1
+  file_picker: ^6.1.1
+  shared_preferences: ^2.2.2
+  window_manager: ^0.3.7
+  
+  # UI Framework
+  flutter_adaptive_scaffold: ^0.1.7+1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+  dart_code_metrics: ^5.7.6
+
+flutter:
+  uses-material-design: true
