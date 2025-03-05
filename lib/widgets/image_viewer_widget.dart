@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_image_clipboard/flutter_image_clipboard.dart';
 import '../models/image_file.dart';
 import '../providers/image_provider.dart';
 
@@ -21,51 +20,12 @@ class ImageViewerWidget extends ConsumerWidget {
     required this.onToggleFullScreen,
   });
 
-  // Copy image to clipboard
-  Future<void> _copyToClipboard(BuildContext context) async {
-    try {
-      await FlutterImageClipboard().copyImageToClipboard(imageFile.file);
-      
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Image copied to clipboard'),
-            duration: Duration(seconds: 2),
-          ),
-        );
-      }
-    } catch (e) {
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Failed to copy image: $e'),
-            backgroundColor: Theme.of(context).colorScheme.error,
-            duration: const Duration(seconds: 3),
-          ),
-        );
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Focus node for keyboard shortcuts
     final focusNode = FocusNode();
 
     return Focus(
       focusNode: focusNode..requestFocus(),
-      onKeyEvent: (node, event) {
-        if (event is KeyDownEvent) {
-          // Handle copy shortcut
-          if (event.logicalKey == LogicalKeyboardKey.keyC && 
-              (HardwareKeyboard.instance.isControlPressed || 
-               HardwareKeyboard.instance.isMetaPressed)) {
-            _copyToClipboard(context);
-            return KeyEventResult.handled;
-          }
-        }
-        return KeyEventResult.ignored;
-      },
       child: GestureDetector(
         onDoubleTap: onToggleFullScreen,
         onSecondaryTap: () {
@@ -82,10 +42,6 @@ class ImageViewerWidget extends ConsumerWidget {
               position.dy + 1,
             ),
             items: [
-              PopupMenuItem(
-                child: const Text('Copy Image'),
-                onTap: () => _copyToClipboard(context),
-              ),
               PopupMenuItem(
                 child: const Text('Rotate Right 90°'),
                 onTap: () => ref.read(imageViewerProvider.notifier).rotateImage(true),
@@ -170,11 +126,6 @@ class ImageViewerWidget extends ConsumerWidget {
                             ? 'Exit Fullscreen (F)' 
                             : 'Enter Fullscreen (F)',
                           onPressed: onToggleFullScreen,
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.copy),
-                          tooltip: 'Copy Image (Ctrl+C)',
-                          onPressed: () => _copyToClipboard(context),
                         ),
                         PopupMenuButton<double>(
                           icon: const Icon(Icons.rotate_right),
