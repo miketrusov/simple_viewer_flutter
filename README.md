@@ -1,16 +1,40 @@
-# simple_viewer
+# Simple Viewer
 
-A new Flutter project.
+A cross-platform image viewer built with Flutter, designed for simplicity and efficiency.
 
-## Getting Started
+## Features
 
-This project is a starting point for a Flutter application.
+- View common image formats (JPEG, PNG, GIF, BMP, WebP, TIFF)
+- Open single images or entire folders
+- Gallery view with thumbnails (collapsible)
+- Image rotation and zoom support
+- Full-screen mode
+- Keyboard navigation
+- Cross-platform support (Windows, macOS, Linux)
 
-A few resources to get you started if this is your first Flutter project:
+## Controls
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+- Left/Right arrows: Navigate between images
+- F key: Toggle full-screen
+- </, > keys: Rotate image
+- Ctrl/Cmd + mouse wheel: Zoom
+- Double-click: Toggle full-screen
+- Right-click: Context menu with rotation options
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Development Setup
+
+1. Ensure Flutter is installed and configured
+2. Clone this repository
+3. Run `flutter pub get` to install dependencies
+4. Run `flutter run` to start the app
+
+## Building
+
+```bash
+flutter build <platform>
+```
+
+Replace `<platform>` with:
+- `windows` for Windows
+- `macos` for macOS
+- `linux` for Linux

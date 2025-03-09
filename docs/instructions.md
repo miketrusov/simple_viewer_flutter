@@ -1,0 +1,9 @@
+- Use simple and consistent coding style following common conventions for the language and framework
+- Implement unit and ui tests for new features, preferably implementing test before the feature
+- Always execute tests after making changes and fix the issues!
+- When reviewing test and linter output, evaluate 3 options and pick one that will fix code rather than add workaround
+- Do not invent requiments, refer back to the list below, and if something isn't clear then ask for clarification update this file
+- Always consider SOLID principles when adding new code
+- When given a plan document, use it, pause after every step and mark it complete in the plan document before proceeding to the next step; this will help you resume the implementation after interruption
+- Use concise language, be brief in explanations
+- Do not hallucinate
