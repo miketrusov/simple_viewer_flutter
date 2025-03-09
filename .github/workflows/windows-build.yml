@@ -18,7 +18,7 @@ jobs:
       shell: pwsh
       run: |
         $ProgressPreference = 'SilentlyContinue'
-        Invoke-WebRequest -Uri "https://storage.googleapis.com/flutter_infra_release/releases/stable/windows/flutter_windows_3.16.9-stable.zip" -OutFile "flutter.zip"
+        Invoke-WebRequest -Uri "https://storage.googleapis.com/flutter_infra_release/releases/stable/windows/flutter_windows_3.29.1-stable.zip" -OutFile "flutter.zip"
         Expand-Archive -Path flutter.zip -DestinationPath .
     
     - name: Add Flutter to PATH
