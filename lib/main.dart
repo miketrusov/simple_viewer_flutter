@@ -8,17 +8,45 @@ void main() async {
   
   // Initialize window_manager
   await windowManager.ensureInitialized();
-  await windowManager.waitUntilReadyToShow();
-
+  
   // Set window properties
-  await windowManager.setTitle('Simple Viewer');
-  await windowManager.setMinimumSize(const Size(800, 600));
-
+  WindowOptions windowOptions = const WindowOptions(
+    size: Size(1024, 768),
+    minimumSize: Size(800, 600),
+    center: true,
+    title: 'Simple Viewer',
+  );
+  
+  await windowManager.waitUntilReadyToShow(windowOptions);
+  await windowManager.show();
+  
   runApp(const ProviderScope(child: SimpleViewerApp()));
 }
 
-class SimpleViewerApp extends StatelessWidget {
+class SimpleViewerApp extends StatefulWidget {
   const SimpleViewerApp({super.key});
+
+  @override
+  State<SimpleViewerApp> createState() => _SimpleViewerAppState();
+}
+
+class _SimpleViewerAppState extends State<SimpleViewerApp> with WindowListener {
+  @override
+  void initState() {
+    super.initState();
+    windowManager.addListener(this);
+  }
+
+  @override
+  void dispose() {
+    windowManager.removeListener(this);
+    super.dispose();
+  }
+
+  @override
+  void onWindowClose() async {
+    await windowManager.destroy();
+  }
 
   @override
   Widget build(BuildContext context) {
