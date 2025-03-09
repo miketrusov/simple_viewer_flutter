@@ -1,8 +1,10 @@
-name: Windows Build (Direct)
+name: Windows Build and Release
 
 on:
   push:
     branches: [ main ]
+    tags:
+      - 'v*'
   pull_request:
     branches: [ main ]
   workflow_dispatch:
@@ -43,43 +45,28 @@ jobs:
       with:
         name: windows-build
         path: build/windows/x64/runner/Release/
-        retention-days: 1
+        retention-days: 7
 
-  release:
-    needs: build
-    runs-on: windows-latest
-    if: github.event_name == 'workflow_dispatch'
-    
-    steps:
-    - name: Download build artifact
-      uses: actions/download-artifact@v4
-      with:
-        name: windows-build
-        path: windows-build
-    
-    - name: Create Release Package
-      run: |
-        Compress-Archive -Path "windows-build/*" -DestinationPath "SimpleViewer-windows.zip"
-    
     - name: Create Release
-      id: create_release
+      if: startsWith(github.ref, 'refs/tags/')
+      shell: pwsh
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      shell: pwsh
       run: |
-        $date = Get-Date -Format "yyyy.MM.dd-HH.mm"
-        $response = gh release create "build-$date" SimpleViewer-windows.zip --generate-notes --title "Build $date" --latest
+        Compress-Archive -Path "build/windows/x64/runner/Release/*" -DestinationPath "SimpleViewer-windows.zip"
+        $tag = "${{ github.ref_name }}"
+        $response = gh release create "$tag" SimpleViewer-windows.zip --generate-notes --title "Release $tag" --latest
         $releaseUrl = "${{ github.server_url }}/${{ github.repository }}/releases/latest"
         echo "RELEASE_URL=$releaseUrl" >> $env:GITHUB_ENV
-    
+
     - name: Send Discord Notification
-      if: success()
+      if: startsWith(github.ref, 'refs/tags/') && success()
       shell: pwsh
       env:
         DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
       run: |
         $MESSAGE = @{
-          content = "🚀 New Windows build available! Download here: $env:RELEASE_URL"
+          content = "🚀 New Windows build ${{ github.ref_name }} available! Download here: $env:RELEASE_URL"
         } | ConvertTo-Json
         
         Invoke-RestMethod -Uri $env:DISCORD_WEBHOOK -Method Post -Body $MESSAGE -ContentType 'application/json'
