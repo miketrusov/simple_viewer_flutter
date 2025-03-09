@@ -44,3 +44,30 @@ jobs:
         name: windows-build
         path: build/windows/x64/runner/Release/
         retention-days: 1
+    
+    - name: Create Release Package
+      run: |
+        Compress-Archive -Path "build/windows/x64/runner/Release/*" -DestinationPath "SimpleViewer-windows.zip"
+    
+    - name: Create Release
+      id: create_release
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      shell: pwsh
+      run: |
+        $date = Get-Date -Format "yyyy.MM.dd-HH.mm"
+        $response = gh release create "build-$date" SimpleViewer-windows.zip --generate-notes --title "Build $date" --latest
+        $releaseUrl = "${{ github.server_url }}/${{ github.repository }}/releases/latest"
+        echo "RELEASE_URL=$releaseUrl" >> $env:GITHUB_ENV
+    
+    - name: Send Discord Notification
+      if: success()
+      shell: pwsh
+      env:
+        DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+      run: |
+        $MESSAGE = @{
+          content = "🚀 New Windows build available! Download here: $env:RELEASE_URL"
+        } | ConvertTo-Json
+        
+        Invoke-RestMethod -Uri $env:DISCORD_WEBHOOK -Method Post -Body $MESSAGE -ContentType 'application/json'
