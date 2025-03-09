@@ -44,10 +44,22 @@ jobs:
         name: windows-build
         path: build/windows/x64/runner/Release/
         retention-days: 1
+
+  release:
+    needs: build
+    runs-on: windows-latest
+    if: github.event_name == 'workflow_dispatch'
+    
+    steps:
+    - name: Download build artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: windows-build
+        path: windows-build
     
     - name: Create Release Package
       run: |
-        Compress-Archive -Path "build/windows/x64/runner/Release/*" -DestinationPath "SimpleViewer-windows.zip"
+        Compress-Archive -Path "windows-build/*" -DestinationPath "SimpleViewer-windows.zip"
     
     - name: Create Release
       id: create_release
