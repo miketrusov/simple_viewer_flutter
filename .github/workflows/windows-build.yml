@@ -66,7 +66,7 @@ jobs:
         DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
       run: |
         $MESSAGE = @{
-          content = "🚀 New Windows build ${{ github.ref_name }} available! Download here: $env:RELEASE_URL"
+          content = "🚀 New Windows build ${{ github.ref_name }} available! $env:RELEASE_URL"
         } | ConvertTo-Json
         
         Invoke-RestMethod -Uri $env:DISCORD_WEBHOOK -Method Post -Body $MESSAGE -ContentType 'application/json'
